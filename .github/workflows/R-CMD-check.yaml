@@ -3,10 +3,10 @@
 on:
   push:
     branches:
-      - master
+      - batman
   pull_request:
     branches:
-      - master
+      - batman
 
 name: R-CMD-check
 
