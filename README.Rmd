@@ -8,7 +8,7 @@ hrbrpkghelpr::global_opts()
 ```
 
 ```{r badges, results='asis', echo=FALSE, cache=FALSE}
-hrbrpkghelpr::stinking_badges()
+hrbrpkghelpr::stinking_badges(branch = "batman")
 ```
 
 ```{r description, results='asis', echo=FALSE, cache=FALSE}
