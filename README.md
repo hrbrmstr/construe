@@ -18,7 +18,7 @@ HTTP Request, Response and URL Parser
 
 ## Description
 
-A dimple and fast HTTP request, response and URL parser based on the C++
+A simple and fast HTTP request, response and URL parser based on the C++
 ‘httpparser’ library by Alex Nekipelov
 (<https://github.com/nekipelov/httpparser>).
 
@@ -33,11 +33,17 @@ The following functions are implemented:
 ## Installation
 
 ``` r
+install.packages("construe", repos = c("https://cinc.rud.is", "https://cloud.r-project.org/"))
+# or
 remotes::install_git("https://git.rud.is/hrbrmstr/construe.git")
 # or
 remotes::install_git("https://git.sr.ht/~hrbrmstr/construe")
 # or
+remotes::install_gitlab("hrbrmstr/construe")
+# or
 remotes::install_bitbucket("hrbrmstr/construe")
+# or
+remotes::install_github("hrbrmstr/construe")
 ```
 
 NOTE: To use the ‘remotes’ install options you will need to have the
@@ -95,8 +101,8 @@ microbenchmark::microbenchmark(
   parse_request = parse_request(req)
 )
 ## Unit: microseconds
-##           expr     min       lq     mean   median      uq     max neval
-##  parse_request 281.369 289.5035 310.6147 305.0675 317.057 499.382   100
+##           expr     min      lq     mean  median       uq    max neval
+##  parse_request 278.215 301.504 325.0598 311.175 323.4045 615.78   100
 ```
 
 ### Responses
@@ -145,8 +151,8 @@ microbenchmark::microbenchmark(
   parse_response = parse_response(resp)
 )
 ## Unit: microseconds
-##            expr     min      lq     mean   median       uq     max neval
-##  parse_response 279.881 295.951 317.3297 306.9435 322.6595 674.712   100
+##            expr     min       lq     mean  median       uq     max neval
+##  parse_response 276.707 295.5835 318.2582 303.949 318.0525 533.422   100
 ```
 
 ### URLs
@@ -186,8 +192,8 @@ microbenchmark::microbenchmark(
   parse_url = parse_url(turls[1])
 )
 ## Unit: microseconds
-##       expr     min      lq     mean   median       uq     max neval
-##  parse_url 697.727 747.634 775.9437 761.5855 775.0465 1025.68   100
+##       expr    min       lq     mean   median       uq      max neval
+##  parse_url 697.76 755.4585 832.5939 777.1725 871.3295 1311.091   100
 ```
 
 ## construe Metrics

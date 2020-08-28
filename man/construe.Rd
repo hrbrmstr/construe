@@ -6,7 +6,7 @@
 \alias{construe-package}
 \title{HTTP Request, Response and URL Parser}
 \description{
-A dimple and fast HTTP request, response and URL parser based on the C++ 'httpparser' library
+A simple and fast HTTP request, response and URL parser based on the C++ 'httpparser' library
 by Alex Nekipelov (\url{https://github.com/nekipelov/httpparser})
 }
 \seealso{

@@ -12,7 +12,7 @@ Authors@R: c(
            comment = "httpparser C++ library")
   )
 Maintainer: Bob Rudis <bob@rud.is>
-Description: A dimple and fast HTTP request, response and URL parser based on the C++ 'httpparser' library
+Description: A simple and fast HTTP request, response and URL parser based on the C++ 'httpparser' library
     by Alex Nekipelov (<https://github.com/nekipelov/httpparser>).
 URL: https://git.rud.is/hrbrmstr/construe
 BugReports: https://git.rud.is/hrbrmstr/construe/issues
