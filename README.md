@@ -6,8 +6,13 @@ developed.](https://www.repostatus.org/badges/latest/active.svg)](https://www.re
 by](https://img.shields.io/badge/Keybase-Verified-brightgreen.svg)](https://keybase.io/hrbrmstr)
 ![Signed commit
 %](https://img.shields.io/badge/Signed_Commits-100%25-lightgrey.svg)
+[![R-CMD-check](https://github.com/hrbrmstr/construe/workflows/R-CMD-check/badge.svg)](https://github.com/hrbrmstr/construe/actions?query=workflow%3AR-CMD-check)
 [![Linux build
-Status](https://travis-ci.org/hrbrmstr/construe.svg?branch=master)](https://travis-ci.org/hrbrmstr/construe)  
+Status](https://travis-ci.org/hrbrmstr/construe.svg?branch=master)](https://travis-ci.org/hrbrmstr/construe)
+[![Windows build
+status](https://ci.appveyor.com/api/projects/status/github/hrbrmstr/construe?svg=true)](https://ci.appveyor.com/project/hrbrmstr/construe)
+[![Coverage
+Status](https://codecov.io/gh/hrbrmstr/construe/branch/master/graph/badge.svg)](https://codecov.io/gh/hrbrmstr/construe)
 ![Minimal R
 Version](https://img.shields.io/badge/R%3E%3D-3.6.0-blue.svg)
 ![License](https://img.shields.io/badge/License-MIT-blue.svg)
@@ -101,8 +106,8 @@ microbenchmark::microbenchmark(
   parse_request = parse_request(req)
 )
 ## Unit: microseconds
-##           expr     min      lq     mean  median       uq    max neval
-##  parse_request 278.215 301.504 325.0598 311.175 323.4045 615.78   100
+##           expr     min       lq     mean  median      uq     max neval
+##  parse_request 278.654 282.3435 300.1954 300.018 306.678 483.234   100
 ```
 
 ### Responses
@@ -151,8 +156,8 @@ microbenchmark::microbenchmark(
   parse_response = parse_response(resp)
 )
 ## Unit: microseconds
-##            expr     min       lq     mean  median       uq     max neval
-##  parse_response 276.707 295.5835 318.2582 303.949 318.0525 533.422   100
+##            expr     min       lq     mean  median      uq     max neval
+##  parse_response 277.677 297.1635 323.4402 311.109 334.343 500.039   100
 ```
 
 ### URLs
@@ -192,19 +197,20 @@ microbenchmark::microbenchmark(
   parse_url = parse_url(turls[1])
 )
 ## Unit: microseconds
-##       expr    min       lq     mean   median       uq      max neval
-##  parse_url 697.76 755.4585 832.5939 777.1725 871.3295 1311.091   100
+##       expr    min     lq     mean   median       uq      max neval
+##  parse_url 687.11 733.38 787.4106 751.3515 809.7655 1325.274   100
 ```
 
 ## construe Metrics
 
 | Lang         | \# Files |  (%) |  LoC |  (%) | Blank lines |  (%) | \# Lines |  (%) |
 | :----------- | -------: | ---: | ---: | ---: | ----------: | ---: | -------: | ---: |
-| C/C++ Header |        5 | 0.23 | 1561 | 0.44 |         120 | 0.29 |       54 | 0.20 |
-| C++          |        2 | 0.09 |  162 | 0.05 |          55 | 0.13 |       20 | 0.07 |
-| Rmd          |        1 | 0.05 |   49 | 0.01 |          28 | 0.07 |       37 | 0.14 |
-| R            |        3 | 0.14 |   13 | 0.00 |           6 | 0.01 |       25 | 0.09 |
-| SUM          |       11 | 0.50 | 1785 | 0.50 |         209 | 0.50 |      136 | 0.50 |
+| C/C++ Header |        5 | 0.21 | 1561 | 0.43 |         120 | 0.28 |       54 | 0.20 |
+| C++          |        2 | 0.08 |  162 | 0.04 |          55 | 0.13 |       20 | 0.07 |
+| Rmd          |        1 | 0.04 |   49 | 0.01 |          28 | 0.07 |       37 | 0.13 |
+| YAML         |        1 | 0.04 |   22 | 0.01 |           2 | 0.00 |        2 | 0.01 |
+| R            |        3 | 0.12 |   13 | 0.00 |           6 | 0.01 |       25 | 0.09 |
+| SUM          |       12 | 0.50 | 1807 | 0.50 |         211 | 0.50 |      138 | 0.50 |
 
 clock Package Metrics for construe
 
