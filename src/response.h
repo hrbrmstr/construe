@@ -17,7 +17,7 @@ struct Response {
     Response()
         : versionMajor(0), versionMinor(0), keepAlive(false), statusCode(0)
     {}
-    
+
     struct HeaderItem
     {
         std::string name;
@@ -27,9 +27,9 @@ struct Response {
     int versionMajor;
     int versionMinor;
     std::vector<HeaderItem> headers;
-    std::vector<char> content;
+    std::vector<unsigned char> content;
     bool keepAlive;
-    
+
     unsigned int statusCode;
     std::string status;
 

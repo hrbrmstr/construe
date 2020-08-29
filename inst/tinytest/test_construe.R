@@ -8,6 +8,7 @@ paste0(c(
 ), collapse = "") -> req
 
 res <- parse_request(req)
+res <- parse_request_raw(charToRaw(req))
 
 expect_true(res$method[1] == "GET")
 expect_true(res$keepalive[1] == TRUE)
@@ -24,6 +25,7 @@ paste0(c(
 ), collapse = "") -> resp
 
 res <- parse_response(resp)
+res <- parse_response_raw(charToRaw(resp))
 
 expect_true(res$status_msg[1] == "OK")
 expect_true(res$keepalive[1] == TRUE)
@@ -48,4 +50,15 @@ res <- parse_url(turls)
 
 expect_true(is.na(res$scheme[12]))
 expect_true(res$scheme[1] == "git+ssh")
+
+parse_response_raw(
+  read_file_raw(
+    system.file("extdat", "example.hdr", package = "construe")
+  )
+) -> res
+
+expect_true(res$headers$name[[5]] == "ETag")
+
+
+
 

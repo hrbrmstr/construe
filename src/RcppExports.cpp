@@ -16,6 +16,17 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// parse_request_raw
+List parse_request_raw(RawVector req);
+RcppExport SEXP _construe_parse_request_raw(SEXP reqSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< RawVector >::type req(reqSEXP);
+    rcpp_result_gen = Rcpp::wrap(parse_request_raw(req));
+    return rcpp_result_gen;
+END_RCPP
+}
 // parse_response
 List parse_response(String resp);
 RcppExport SEXP _construe_parse_response(SEXP respSEXP) {
@@ -24,6 +35,17 @@ BEGIN_RCPP
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< String >::type resp(respSEXP);
     rcpp_result_gen = Rcpp::wrap(parse_response(resp));
+    return rcpp_result_gen;
+END_RCPP
+}
+// parse_response_raw
+List parse_response_raw(RawVector resp);
+RcppExport SEXP _construe_parse_response_raw(SEXP respSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< RawVector >::type resp(respSEXP);
+    rcpp_result_gen = Rcpp::wrap(parse_response_raw(resp));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -38,11 +60,25 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// read_file_raw
+RawVector read_file_raw(CharacterVector fil);
+RcppExport SEXP _construe_read_file_raw(SEXP filSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< CharacterVector >::type fil(filSEXP);
+    rcpp_result_gen = Rcpp::wrap(read_file_raw(fil));
+    return rcpp_result_gen;
+END_RCPP
+}
 
 static const R_CallMethodDef CallEntries[] = {
     {"_construe_parse_request", (DL_FUNC) &_construe_parse_request, 1},
+    {"_construe_parse_request_raw", (DL_FUNC) &_construe_parse_request_raw, 1},
     {"_construe_parse_response", (DL_FUNC) &_construe_parse_response, 1},
+    {"_construe_parse_response_raw", (DL_FUNC) &_construe_parse_response_raw, 1},
     {"_construe_parse_url", (DL_FUNC) &_construe_parse_url, 1},
+    {"_construe_read_file_raw", (DL_FUNC) &_construe_read_file_raw, 1},
     {NULL, NULL, 0}
 };
 

@@ -3,18 +3,34 @@
 
 #' Parse an HTTP request
 #'
+#' You can use the non- `_raw` version on input you know for sure has is plain text
+#'
 #' @param req HTTP request character string
 #' @export
 parse_request <- function(req) {
     .Call(`_construe_parse_request`, req)
 }
 
+#' @rdname parse_request
+#' @export
+parse_request_raw <- function(req) {
+    .Call(`_construe_parse_request_raw`, req)
+}
+
 #' Parse an HTTP response
+#'
+#' You can use the non- `_raw` version on input you know for sure has is plain text
 #'
 #' @param resp HTTP response character string
 #' @export
 parse_response <- function(resp) {
     .Call(`_construe_parse_response`, resp)
+}
+
+#' @rdname parse_response
+#' @export
+parse_response_raw <- function(resp) {
+    .Call(`_construe_parse_response_raw`, resp)
 }
 
 #' Parse URLs
@@ -23,5 +39,13 @@ parse_response <- function(resp) {
 #' @export
 parse_url <- function(urls) {
     .Call(`_construe_parse_url`, urls)
+}
+
+#' Read in a file, fast and raw
+#'
+#' @param fil file to read in (no path expansion is performed)a
+#' @export
+read_file_raw <- function(fil) {
+    .Call(`_construe_read_file_raw`, fil)
 }
 

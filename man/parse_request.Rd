@@ -2,13 +2,16 @@
 % Please edit documentation in R/RcppExports.R
 \name{parse_request}
 \alias{parse_request}
+\alias{parse_request_raw}
 \title{Parse an HTTP request}
 \usage{
 parse_request(req)
+
+parse_request_raw(req)
 }
 \arguments{
 \item{req}{HTTP request character string}
 }
 \description{
-Parse an HTTP request
+You can use the non- \verb{_raw} version on input you know for sure has is plain text
 }

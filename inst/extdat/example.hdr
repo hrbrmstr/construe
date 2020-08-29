@@ -1,0 +1,20 @@
+HTTP/1.1 200 OK
+Date: Mon, 13 Jul 2020 11:23:49 GMT
+Content-Type: text/html; charset=UTF-8
+Content-Length: 11757
+Connection: keep-alive
+ETag: "6e185d1cea69"
+Pragma: no-cache
+Cache-Control: no-store, no-cache, must-revalidate, post-check=0, pre-check=0
+Expires: Thu, 19 Nov 1981 08:52:00 GMT
+X-FRAME-OPTIONS: DENY
+Set-Cookie: PHPSESSID=d242c76e2e6ad2e71dd0c524c63e66d0; path=/; secure; HttpOnly
+Set-Cookie: PHPSESSID=d242c76e2e6ad2e71dd0c524c63e66d0; path=/; secure; HttpOnly
+Set-Cookie: PHPSESSID=d242c76e2e6ad2e71dd0c524c63e66d0; path=/; secure; HttpOnly
+Set-Cookie: PHPSESSID=d242c76e2e6ad2e71dd0c524c63e66d0; path=/; secure; HttpOnly
+Set-Cookie: PHPSESSID=d242c76e2e6ad2e71dd0c524c63e66d0; path=/; secure; HttpOnly
+Strict-Transport-Security: max-age=31536000;
+X-XSS-Protection: 1; mode=block;
+X-Content-Type-Options: nosniff
+Content-Security-Policy: default-src 'self'; script-src 'self' 'unsafe-inline'; img-src * data:; style-src 'self' 'unsafe-inline';
+

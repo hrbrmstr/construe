@@ -34,6 +34,7 @@ The following functions are implemented:
   - `parse_request`: Parse an HTTP request
   - `parse_response`: Parse an HTTP response
   - `parse_url`: Parse URLs
+  - `read_file_raw`: Read in a file, fast and raw
 
 ## Installation
 
@@ -74,6 +75,8 @@ paste0(c(
   "Host: 127.0.0.1\r\n", "\r\n"
 ), collapse = "") -> req
 
+req_raw <- charToRaw(req)
+
 parse_request(req)
 ## $method
 ## [1] "GET"
@@ -97,17 +100,47 @@ parse_request(req)
 ## 3       Host                                                       127.0.0.1
 ## 
 ## $content
-## character(0)
+## raw(0)
+## 
+## attr(,"class")
+## [1] "http_request" "list"
+
+parse_request_raw(req_raw)
+## $method
+## [1] "GET"
+## 
+## $uri
+## [1] "/uri.cgi"
+## 
+## $vers_maj
+## [1] 1
+## 
+## $vers_min
+## [1] 1
+## 
+## $keepalive
+## [1] TRUE
+## 
+## $headers
+##         name                                                           value
+## 1 User-Agent                                                     Mozilla/5.0
+## 2     Accept text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8
+## 3       Host                                                       127.0.0.1
+## 
+## $content
+## raw(0)
 ## 
 ## attr(,"class")
 ## [1] "http_request" "list"
 
 microbenchmark::microbenchmark(
-  parse_request = parse_request(req)
+  parse_request = parse_request(req),
+  parse_request_raw = parse_request_raw(req_raw)
 )
 ## Unit: microseconds
-##           expr    min       lq     mean   median    uq     max neval
-##  parse_request 277.25 298.8345 319.8801 313.8915 331.2 508.277   100
+##               expr     min      lq     mean  median       uq      max neval
+##      parse_request 143.584 145.733 167.8424 147.296 168.3755  513.639   100
+##  parse_request_raw 143.359 145.970 191.6970 151.342 187.7785 1105.030   100
 ```
 
 ### Responses
@@ -122,6 +155,8 @@ paste0(c(
   "\r\n",
   "<html />"
 ), collapse = "") -> resp
+
+resp_raw <- charToRaw(resp)
 
 parse_response(resp)
 ## $status_msg
@@ -147,17 +182,48 @@ parse_response(resp)
 ## 4     Connection  keep-alive
 ## 
 ## $content
-## [1] "<" "h" "t" "m" "l" " " "/" ">"
+## [1] 3c 68 74 6d 6c 20 2f 3e
+## 
+## attr(,"class")
+## [1] "http_response" "list"
+
+parse_response_raw(resp_raw)
+## $status_msg
+## [1] "OK"
+## 
+## $status_code
+## [1] 200
+## 
+## $vers_maj
+## [1] 1
+## 
+## $vers_min
+## [1] 1
+## 
+## $keepalive
+## [1] TRUE
+## 
+## $headers
+##             name       value
+## 1         Server nginx/1.2.1
+## 2   Content-Type   text/html
+## 3 Content-Length           8
+## 4     Connection  keep-alive
+## 
+## $content
+## [1] 3c 68 74 6d 6c 20 2f 3e
 ## 
 ## attr(,"class")
 ## [1] "http_response" "list"
 
 microbenchmark::microbenchmark(
-  parse_response = parse_response(resp)
+  parse_response = parse_response(resp),
+  parse_response_raw = parse_response_raw(resp_raw)
 )
 ## Unit: microseconds
-##            expr    min      lq    mean  median       uq     max neval
-##  parse_response 279.62 295.475 320.565 309.104 323.9325 609.723   100
+##                expr     min       lq     mean   median      uq      max neval
+##      parse_response 143.810 147.3945 171.2707 151.5035 175.551  558.811   100
+##  parse_response_raw 142.829 146.1390 184.2711 152.0070 186.137 1088.825   100
 ```
 
 ### URLs
@@ -197,20 +263,110 @@ microbenchmark::microbenchmark(
   parse_url = parse_url(turls[1])
 )
 ## Unit: microseconds
-##       expr     min      lq     mean  median       uq     max neval
-##  parse_url 691.896 734.775 769.0815 760.345 787.7285 946.695   100
+##       expr     min      lq     mean  median      uq     max neval
+##  parse_url 347.202 361.913 409.4541 377.388 412.527 837.142   100
+```
+
+### Parse headers from Palo Alto `HEAD` requests
+
+``` r
+hdr <- read_file_raw(system.file("extdat", "example.hdr", package = "construe"))
+
+cat(rawToChar(hdr))
+## HTTP/1.1 200 OK
+## Date: Mon, 13 Jul 2020 11:23:49 GMT
+## Content-Type: text/html; charset=UTF-8
+## Content-Length: 11757
+## Connection: keep-alive
+## ETag: "6e185d1cea69"
+## Pragma: no-cache
+## Cache-Control: no-store, no-cache, must-revalidate, post-check=0, pre-check=0
+## Expires: Thu, 19 Nov 1981 08:52:00 GMT
+## X-FRAME-OPTIONS: DENY
+## Set-Cookie: PHPSESSID=d242c76e2e6ad2e71dd0c524c63e66d0; path=/; secure; HttpOnly
+## Set-Cookie: PHPSESSID=d242c76e2e6ad2e71dd0c524c63e66d0; path=/; secure; HttpOnly
+## Set-Cookie: PHPSESSID=d242c76e2e6ad2e71dd0c524c63e66d0; path=/; secure; HttpOnly
+## Set-Cookie: PHPSESSID=d242c76e2e6ad2e71dd0c524c63e66d0; path=/; secure; HttpOnly
+## Set-Cookie: PHPSESSID=d242c76e2e6ad2e71dd0c524c63e66d0; path=/; secure; HttpOnly
+## Strict-Transport-Security: max-age=31536000;
+## X-XSS-Protection: 1; mode=block;
+## X-Content-Type-Options: nosniff
+## Content-Security-Policy: default-src 'self'; script-src 'self' 'unsafe-inline'; img-src * data:; style-src 'self' 'unsafe-inline';
+## 
+
+parse_response_raw(hdr)
+## $status_msg
+## [1] "OK"
+## 
+## $status_code
+## [1] 200
+## 
+## $vers_maj
+## [1] 1
+## 
+## $vers_min
+## [1] 1
+## 
+## $keepalive
+## [1] TRUE
+## 
+## $headers
+##                         name
+## 1                       Date
+## 2               Content-Type
+## 3             Content-Length
+## 4                 Connection
+## 5                       ETag
+## 6                     Pragma
+## 7              Cache-Control
+## 8                    Expires
+## 9            X-FRAME-OPTIONS
+## 10                Set-Cookie
+## 11                Set-Cookie
+## 12                Set-Cookie
+## 13                Set-Cookie
+## 14                Set-Cookie
+## 15 Strict-Transport-Security
+## 16          X-XSS-Protection
+## 17    X-Content-Type-Options
+## 18   Content-Security-Policy
+##                                                                                                        value
+## 1                                                                              Mon, 13 Jul 2020 11:23:49 GMT
+## 2                                                                                   text/html; charset=UTF-8
+## 3                                                                                                      11757
+## 4                                                                                                 keep-alive
+## 5                                                                                             "6e185d1cea69"
+## 6                                                                                                   no-cache
+## 7                                             no-store, no-cache, must-revalidate, post-check=0, pre-check=0
+## 8                                                                              Thu, 19 Nov 1981 08:52:00 GMT
+## 9                                                                                                       DENY
+## 10                                      PHPSESSID=d242c76e2e6ad2e71dd0c524c63e66d0; path=/; secure; HttpOnly
+## 11                                      PHPSESSID=d242c76e2e6ad2e71dd0c524c63e66d0; path=/; secure; HttpOnly
+## 12                                      PHPSESSID=d242c76e2e6ad2e71dd0c524c63e66d0; path=/; secure; HttpOnly
+## 13                                      PHPSESSID=d242c76e2e6ad2e71dd0c524c63e66d0; path=/; secure; HttpOnly
+## 14                                      PHPSESSID=d242c76e2e6ad2e71dd0c524c63e66d0; path=/; secure; HttpOnly
+## 15                                                                                         max-age=31536000;
+## 16                                                                                            1; mode=block;
+## 17                                                                                                   nosniff
+## 18 default-src 'self'; script-src 'self' 'unsafe-inline'; img-src * data:; style-src 'self' 'unsafe-inline';
+## 
+## $content
+## raw(0)
+## 
+## attr(,"class")
+## [1] "http_response" "list"
 ```
 
 ## construe Metrics
 
 | Lang         | \# Files |  (%) |  LoC |  (%) | Blank lines |  (%) | \# Lines |  (%) |
 | :----------- | -------: | ---: | ---: | ---: | ----------: | ---: | -------: | ---: |
-| C/C++ Header |        5 | 0.21 | 1561 | 0.43 |         120 | 0.28 |       54 | 0.20 |
-| C++          |        2 | 0.08 |  162 | 0.04 |          55 | 0.13 |       20 | 0.07 |
-| Rmd          |        1 | 0.04 |   49 | 0.01 |          28 | 0.07 |       37 | 0.13 |
+| C/C++ Header |        5 | 0.21 | 1561 | 0.40 |         120 | 0.23 |       54 | 0.16 |
+| C++          |        2 | 0.08 |  298 | 0.08 |          97 | 0.18 |       38 | 0.11 |
+| Rmd          |        1 | 0.04 |   58 | 0.01 |          36 | 0.07 |       40 | 0.12 |
+| R            |        3 | 0.12 |   22 | 0.01 |           9 | 0.02 |       37 | 0.11 |
 | YAML         |        1 | 0.04 |   22 | 0.01 |           2 | 0.00 |        2 | 0.01 |
-| R            |        3 | 0.12 |   13 | 0.00 |           6 | 0.01 |       25 | 0.09 |
-| SUM          |       12 | 0.50 | 1807 | 0.50 |         211 | 0.50 |      138 | 0.50 |
+| SUM          |       12 | 0.50 | 1961 | 0.50 |         264 | 0.50 |      171 | 0.50 |
 
 clock Package Metrics for construe
 

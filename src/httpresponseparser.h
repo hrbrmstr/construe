@@ -33,7 +33,7 @@ public:
         ParsingError
     };
 
-    ParseResult parse(Response &resp, const char *begin, const char *end)
+    ParseResult parse(Response &resp, const unsigned char *begin, const unsigned char *end)
     {
         return consume(resp, begin, end);
     }
@@ -44,7 +44,7 @@ private:
         return strcasecmp(item.name.c_str(), "Connection") == 0;
     }
 
-    ParseResult consume(Response &resp, const char *begin, const char *end)
+    ParseResult consume(Response &resp, const unsigned char *begin, const unsigned char *end)
     {
         while( begin != end )
         {

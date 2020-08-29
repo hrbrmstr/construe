@@ -49,10 +49,15 @@ paste0(c(
   "Host: 127.0.0.1\r\n", "\r\n"
 ), collapse = "") -> req
 
+req_raw <- charToRaw(req)
+
 parse_request(req)
 
+parse_request_raw(req_raw)
+
 microbenchmark::microbenchmark(
-  parse_request = parse_request(req)
+  parse_request = parse_request(req),
+  parse_request_raw = parse_request_raw(req_raw)
 )
 ```
 
@@ -70,10 +75,15 @@ paste0(c(
   "<html />"
 ), collapse = "") -> resp
 
+resp_raw <- charToRaw(resp)
+
 parse_response(resp)
 
+parse_response_raw(resp_raw)
+
 microbenchmark::microbenchmark(
-  parse_response = parse_response(resp)
+  parse_response = parse_response(resp),
+  parse_response_raw = parse_response_raw(resp_raw)
 )
 ```
 
@@ -100,6 +110,16 @@ parse_url(turls)
 microbenchmark::microbenchmark(
   parse_url = parse_url(turls[1])
 )
+```
+
+### Parse headers from Palo Alto `HEAD` requests
+
+```{r why}
+hdr <- read_file_raw(system.file("extdat", "example.hdr", package = "construe"))
+
+cat(rawToChar(hdr))
+
+parse_response_raw(hdr)
 ```
 
 ## construe Metrics

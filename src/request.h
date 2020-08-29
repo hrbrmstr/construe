@@ -17,7 +17,7 @@ struct Request {
     Request()
         : versionMajor(0), versionMinor(0), keepAlive(false)
     {}
-    
+
     struct HeaderItem
     {
         std::string name;
@@ -29,7 +29,7 @@ struct Request {
     int versionMajor;
     int versionMinor;
     std::vector<HeaderItem> headers;
-    std::vector<char> content;
+    std::vector<unsigned char> content;
     bool keepAlive;
 
     std::string inspect() const
