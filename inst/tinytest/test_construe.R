@@ -12,7 +12,7 @@ res <- parse_request_raw(charToRaw(req))
 
 expect_true(res$method[1] == "GET")
 expect_true(res$keepalive[1] == TRUE)
-expect_true("Host" %in% res$headers$name)
+expect_true("host" %in% res$headers$name)
 
 paste0(c(
   "HTTP/1.1 200 OK\r\n",
@@ -29,7 +29,7 @@ res <- parse_response_raw(charToRaw(resp))
 
 expect_true(res$status_msg[1] == "OK")
 expect_true(res$keepalive[1] == TRUE)
-expect_true("Server" %in% res$headers$name)
+expect_true("server" %in% res$headers$name)
 
 c(
   "git+ssh://example.com/path/file",
@@ -57,7 +57,7 @@ parse_response_raw(
   )
 ) -> res
 
-expect_true(res$headers$name[[5]] == "ETag")
+expect_true(res$headers$name[[5]] == "etag")
 
 
 
