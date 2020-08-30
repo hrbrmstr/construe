@@ -294,7 +294,7 @@ DataFrame parse_url(std::vector < std::string > urls) {
 
   UrlParser u;
 
-  for (R_xlen_t idx=0; idx<urls.size(); idx++) {
+  for (R_xlen_t idx=0; idx<(R_xlen_t)urls.size(); idx++) {
 
     int res = u.parse(urls[idx].c_str());
 
@@ -380,8 +380,10 @@ RawVector read_file_raw(CharacterVector fil, int buffer_size = 16384) {
 
 #ifdef _WIN32
     struct _stati64 st;
-    _wstati64(fil[0].begin(), &st)
-    // _wstati64(wfil.begin(), &st)
+    size_t len = MultiByteToWideChar(CP_UTF8, 0, fil[0].begin(), -1, NULL, 0);
+    wchar_t buf[len];
+    MultiByteToWideChar(CP_UTF8, 0, fil[0].begin(), -1, &buf[0], len);
+    _wstati64(&buf[0], &st)
 #else
     struct stat st;
     stat(fil[0].begin(), &st);
@@ -390,7 +392,7 @@ RawVector read_file_raw(CharacterVector fil, int buffer_size = 16384) {
     RawVector out(st.st_size);
 
     in.seekg(0, std::ios::beg);
-    in.read((char *)out.begin(), st.st_size);
+    in.read((char *)(out.begin()), st.st_size);
     in.close();
 
     return(out);
