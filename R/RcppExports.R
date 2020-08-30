@@ -24,6 +24,9 @@ parse_request <- function(req, headers_lowercase = TRUE) {
 }
 
 #' @rdname parse_request
+#' @param req HTTP request character string
+#' @param headers_lowercase if `TRUE` (the default) names in the `headers` data frame
+#'        element are converted to lower case
 #' @export
 parse_request_raw <- function(req, headers_lowercase = TRUE) {
     .Call(`_construe_parse_request_raw`, req, headers_lowercase)
@@ -55,6 +58,9 @@ parse_response <- function(resp, headers_lowercase = TRUE) {
 }
 
 #' @rdname parse_response
+#' @param resp HTTP request character string
+#' @param headers_lowercase if `TRUE` (the default) names in the `headers` data frame
+#'        element are converted to lower case
 #' @export
 parse_response_raw <- function(resp, headers_lowercase = TRUE) {
     .Call(`_construe_parse_response_raw`, resp, headers_lowercase)

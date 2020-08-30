@@ -5,12 +5,15 @@
 \alias{parse_request_raw}
 \title{Parse an HTTP request}
 \usage{
-parse_request(req)
+parse_request(req, headers_lowercase = TRUE)
 
-parse_request_raw(req)
+parse_request_raw(req, headers_lowercase = TRUE)
 }
 \arguments{
 \item{req}{HTTP request character string}
+
+\item{headers_lowercase}{if \code{TRUE} (the default) names in the \code{headers} data frame
+element are converted to lower case}
 }
 \description{
 You can use the non- \verb{_raw} version on input you know for sure is plain text

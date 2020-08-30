@@ -97,7 +97,7 @@ sys::exec_internal(
   args = c("--include", "--head", "--silent", "https://httpbin.org/")
 ) -> res
 
-rawToChar(res$stdout)
+str(parse_response(rawToChar(res$stdout)), 2)
 ```
 
 `GET` request:
@@ -108,7 +108,7 @@ sys::exec_internal(
   args = c("--include", "--silent", "https://httpbin.org/")
 ) -> res
 
-parse_response_raw(res$stdout)
+str(parse_response_raw(res$stdout), 2)
 ```
 
 ### URLs

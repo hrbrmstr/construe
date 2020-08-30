@@ -5,12 +5,15 @@
 \alias{parse_response_raw}
 \title{Parse an HTTP response}
 \usage{
-parse_response(resp)
+parse_response(resp, headers_lowercase = TRUE)
 
-parse_response_raw(resp)
+parse_response_raw(resp, headers_lowercase = TRUE)
 }
 \arguments{
-\item{resp}{HTTP response character string}
+\item{resp}{HTTP request character string}
+
+\item{headers_lowercase}{if \code{TRUE} (the default) names in the \code{headers} data frame
+element are converted to lower case}
 }
 \description{
 You can use the non- \verb{_raw} version on input you know for sure is plain text

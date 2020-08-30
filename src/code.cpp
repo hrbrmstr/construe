@@ -95,6 +95,9 @@ List parse_request(String req, bool headers_lowercase = true) {
 }
 
 //' @rdname parse_request
+//' @param req HTTP request character string
+//' @param headers_lowercase if `TRUE` (the default) names in the `headers` data frame
+//'        element are converted to lower case
 //' @export
 // [[Rcpp::export]]
 List parse_request_raw(RawVector req, bool headers_lowercase = true) {
@@ -216,6 +219,9 @@ List parse_response(String resp, bool headers_lowercase = true) {
 }
 
 //' @rdname parse_response
+//' @param resp HTTP request character string
+//' @param headers_lowercase if `TRUE` (the default) names in the `headers` data frame
+//'        element are converted to lower case
 //' @export
 // [[Rcpp::export]]
 List parse_response_raw(RawVector resp, bool headers_lowercase = true) {
