@@ -13,5 +13,16 @@ parse_request_raw(req)
 \item{req}{HTTP request character string}
 }
 \description{
-You can use the non- \verb{_raw} version on input you know for sure has is plain text
+You can use the non- \verb{_raw} version on input you know for sure is plain text
+}
+\examples{
+paste0(c(
+  "GET /uri.cgi HTTP/1.1\r\n",
+  "User-Agent: Mozilla/5.0\r\n",
+  "Accept: text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8\r\n",
+  "Host: 127.0.0.1\r\n", "\r\n"
+), collapse = "") -> req
+
+res <- parse_request(req)
+res <- parse_request_raw(charToRaw(req))
 }

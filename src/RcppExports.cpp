@@ -6,46 +6,50 @@
 using namespace Rcpp;
 
 // parse_request
-List parse_request(String req);
-RcppExport SEXP _construe_parse_request(SEXP reqSEXP) {
+List parse_request(String req, bool headers_lowercase);
+RcppExport SEXP _construe_parse_request(SEXP reqSEXP, SEXP headers_lowercaseSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< String >::type req(reqSEXP);
-    rcpp_result_gen = Rcpp::wrap(parse_request(req));
+    Rcpp::traits::input_parameter< bool >::type headers_lowercase(headers_lowercaseSEXP);
+    rcpp_result_gen = Rcpp::wrap(parse_request(req, headers_lowercase));
     return rcpp_result_gen;
 END_RCPP
 }
 // parse_request_raw
-List parse_request_raw(RawVector req);
-RcppExport SEXP _construe_parse_request_raw(SEXP reqSEXP) {
+List parse_request_raw(RawVector req, bool headers_lowercase);
+RcppExport SEXP _construe_parse_request_raw(SEXP reqSEXP, SEXP headers_lowercaseSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< RawVector >::type req(reqSEXP);
-    rcpp_result_gen = Rcpp::wrap(parse_request_raw(req));
+    Rcpp::traits::input_parameter< bool >::type headers_lowercase(headers_lowercaseSEXP);
+    rcpp_result_gen = Rcpp::wrap(parse_request_raw(req, headers_lowercase));
     return rcpp_result_gen;
 END_RCPP
 }
 // parse_response
-List parse_response(String resp);
-RcppExport SEXP _construe_parse_response(SEXP respSEXP) {
+List parse_response(String resp, bool headers_lowercase);
+RcppExport SEXP _construe_parse_response(SEXP respSEXP, SEXP headers_lowercaseSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< String >::type resp(respSEXP);
-    rcpp_result_gen = Rcpp::wrap(parse_response(resp));
+    Rcpp::traits::input_parameter< bool >::type headers_lowercase(headers_lowercaseSEXP);
+    rcpp_result_gen = Rcpp::wrap(parse_response(resp, headers_lowercase));
     return rcpp_result_gen;
 END_RCPP
 }
 // parse_response_raw
-List parse_response_raw(RawVector resp);
-RcppExport SEXP _construe_parse_response_raw(SEXP respSEXP) {
+List parse_response_raw(RawVector resp, bool headers_lowercase);
+RcppExport SEXP _construe_parse_response_raw(SEXP respSEXP, SEXP headers_lowercaseSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< RawVector >::type resp(respSEXP);
-    rcpp_result_gen = Rcpp::wrap(parse_response_raw(resp));
+    Rcpp::traits::input_parameter< bool >::type headers_lowercase(headers_lowercaseSEXP);
+    rcpp_result_gen = Rcpp::wrap(parse_response_raw(resp, headers_lowercase));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -61,24 +65,25 @@ BEGIN_RCPP
 END_RCPP
 }
 // read_file_raw
-RawVector read_file_raw(CharacterVector fil);
-RcppExport SEXP _construe_read_file_raw(SEXP filSEXP) {
+RawVector read_file_raw(CharacterVector fil, int buffer_size);
+RcppExport SEXP _construe_read_file_raw(SEXP filSEXP, SEXP buffer_sizeSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< CharacterVector >::type fil(filSEXP);
-    rcpp_result_gen = Rcpp::wrap(read_file_raw(fil));
+    Rcpp::traits::input_parameter< int >::type buffer_size(buffer_sizeSEXP);
+    rcpp_result_gen = Rcpp::wrap(read_file_raw(fil, buffer_size));
     return rcpp_result_gen;
 END_RCPP
 }
 
 static const R_CallMethodDef CallEntries[] = {
-    {"_construe_parse_request", (DL_FUNC) &_construe_parse_request, 1},
-    {"_construe_parse_request_raw", (DL_FUNC) &_construe_parse_request_raw, 1},
-    {"_construe_parse_response", (DL_FUNC) &_construe_parse_response, 1},
-    {"_construe_parse_response_raw", (DL_FUNC) &_construe_parse_response_raw, 1},
+    {"_construe_parse_request", (DL_FUNC) &_construe_parse_request, 2},
+    {"_construe_parse_request_raw", (DL_FUNC) &_construe_parse_request_raw, 2},
+    {"_construe_parse_response", (DL_FUNC) &_construe_parse_response, 2},
+    {"_construe_parse_response_raw", (DL_FUNC) &_construe_parse_response_raw, 2},
     {"_construe_parse_url", (DL_FUNC) &_construe_parse_url, 1},
-    {"_construe_read_file_raw", (DL_FUNC) &_construe_read_file_raw, 1},
+    {"_construe_read_file_raw", (DL_FUNC) &_construe_read_file_raw, 2},
     {NULL, NULL, 0}
 };
 

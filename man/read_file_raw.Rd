@@ -4,11 +4,20 @@
 \alias{read_file_raw}
 \title{Read in a file, fast and raw}
 \usage{
-read_file_raw(fil)
+read_file_raw(fil, buffer_size = 16384L)
 }
 \arguments{
-\item{fil}{file to read in (no path expansion is performed)a}
+\item{fil}{file to read in (no path expansion is performed)}
+
+\item{buffer_size}{larger buffer sizes may speed up reading of
+very large files. It can also hurt performance, and this
+function reads in the entire file into memory, so a
+large buffer size also means more (temporary) memory will
+be allocated.}
 }
 \description{
 Read in a file, fast and raw
+}
+\examples{
+read_file_raw(system.file("extdat", "example.hdr", package = "construe"))
 }

@@ -12,3 +12,7 @@ parse_url(urls)
 \description{
 Parse URLs
 }
+\examples{
+URL <- "http://www.example.com/dir/subdir?param=1&param=2;param\%20=\%20#fragment"
+parse_url(URL)
+}

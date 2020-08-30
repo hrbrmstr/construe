@@ -18,14 +18,34 @@
 using namespace Rcpp;
 using namespace httpparser;
 
+std::string str_tolower(std::string str) {
+  std::transform(
+    str.begin(), str.end(), str.begin(),
+    [](unsigned char c){ return(std::tolower(c)); }
+  );
+  return(str);
+}
+
 //' Parse an HTTP request
 //'
-//' You can use the non- `_raw` version on input you know for sure has is plain text
+//' You can use the non- `_raw` version on input you know for sure is plain text
 //'
 //' @param req HTTP request character string
+//' @param headers_lowercase if `TRUE` (the default) names in the `headers` data frame
+//'        element are converted to lower case
 //' @export
+//' @examples
+//' paste0(c(
+//'   "GET /uri.cgi HTTP/1.1\r\n",
+//'   "User-Agent: Mozilla/5.0\r\n",
+//'   "Accept: text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8\r\n",
+//'   "Host: 127.0.0.1\r\n", "\r\n"
+//' ), collapse = "") -> req
+//'
+//' res <- parse_request(req)
+//' res <- parse_request_raw(charToRaw(req))
 // [[Rcpp::export]]
-List parse_request(String req) {
+List parse_request(String req, bool headers_lowercase = true) {
 
   List l;
 
@@ -43,7 +63,7 @@ List parse_request(String req) {
 
     R_xlen_t idx = 0;
     for (std::vector<Request::HeaderItem>::const_iterator it = request.headers.begin();  it != request.headers.end(); ++it) {
-      names[idx] = it->name;
+      names[idx] = headers_lowercase ? str_tolower(it->name) : it->name;
       vals[idx++] = it->value;
     }
 
@@ -77,7 +97,7 @@ List parse_request(String req) {
 //' @rdname parse_request
 //' @export
 // [[Rcpp::export]]
-List parse_request_raw(RawVector req) {
+List parse_request_raw(RawVector req, bool headers_lowercase = true) {
 
   List l;
 
@@ -93,7 +113,7 @@ List parse_request_raw(RawVector req) {
 
     R_xlen_t idx = 0;
     for (std::vector<Request::HeaderItem>::const_iterator it = request.headers.begin();  it != request.headers.end(); ++it) {
-      names[idx] = it->name;
+      names[idx] = headers_lowercase ? str_tolower(it->name) : it->name;
       vals[idx++] = it->value;
     }
 
@@ -126,12 +146,27 @@ List parse_request_raw(RawVector req) {
 
 //' Parse an HTTP response
 //'
-//' You can use the non- `_raw` version on input you know for sure has is plain text
+//' You can use the non- `_raw` version on input you know for sure is plain text
 //'
 //' @param resp HTTP response character string
+//' @param headers_lowercase if `TRUE` (the default) names in the `headers` data frame
+//'        element are converted to lower case
 //' @export
+//' @examples
+//' paste0(c(
+//'   "HTTP/1.1 200 OK\r\n",
+//'   "Server: nginx/1.2.1\r\n",
+//'   "Content-Type: text/html\r\n",
+//'   "Content-Length: 8\r\n",
+//'   "Connection: keep-alive\r\n",
+//'   "\r\n",
+//'   "<html />"
+//' ), collapse = "") -> resp
+//'
+//' res <- parse_response(resp)
+//' res <- parse_response_raw(charToRaw(resp))
 // [[Rcpp::export]]
-List parse_response(String resp) {
+List parse_response(String resp, bool headers_lowercase = true) {
 
   List l;
 
@@ -149,7 +184,7 @@ List parse_response(String resp) {
 
     R_xlen_t idx = 0;
     for (std::vector<Response::HeaderItem>::const_iterator it = response.headers.begin();  it != response.headers.end(); ++it) {
-      names[idx] = it->name;
+      names[idx] = headers_lowercase ? str_tolower(it->name) : it->name;
       vals[idx++] = it->value;
     }
 
@@ -183,7 +218,7 @@ List parse_response(String resp) {
 //' @rdname parse_response
 //' @export
 // [[Rcpp::export]]
-List parse_response_raw(RawVector resp) {
+List parse_response_raw(RawVector resp, bool headers_lowercase = true) {
 
   List l;
 
@@ -199,7 +234,7 @@ List parse_response_raw(RawVector resp) {
 
     R_xlen_t idx = 0;
     for (std::vector<Response::HeaderItem>::const_iterator it = response.headers.begin();  it != response.headers.end(); ++it) {
-      names[idx] = it->name;
+      names[idx] = headers_lowercase ? str_tolower(it->name) : it->name;
       vals[idx++] = it->value;
     }
 
@@ -234,6 +269,9 @@ List parse_response_raw(RawVector resp) {
 //'
 //' @param urls character vector of URLs
 //' @export
+//' @examples
+//' URL <- "http://www.example.com/dir/subdir?param=1&param=2;param%20=%20#fragment"
+//' parse_url(URL)
 // [[Rcpp::export]]
 DataFrame parse_url(std::vector < std::string > urls) {
 
@@ -297,10 +335,17 @@ DataFrame parse_url(std::vector < std::string > urls) {
 
 //' Read in a file, fast and raw
 //'
-//' @param fil file to read in (no path expansion is performed)a
+//' @param fil file to read in (no path expansion is performed)
+//' @param buffer_size larger buffer sizes may speed up reading of
+//'        very large files. It can also hurt performance, and this
+//'        function reads in the entire file into memory, so a
+//'        large buffer size also means more (temporary) memory will
+//'        be allocated.
 //' @export
+//' @examples
+//' read_file_raw(system.file("extdat", "example.hdr", package = "construe"))
 // [[Rcpp::export]]
-RawVector read_file_raw(CharacterVector fil) {
+RawVector read_file_raw(CharacterVector fil, int buffer_size = 16384) {
 
 // #ifdef _WIN32
 //   wchar_t* buf;
@@ -319,7 +364,11 @@ RawVector read_file_raw(CharacterVector fil) {
 //   std::ifstream in(fil[0], std::ios::in | std::ios::binary);
 // #endif
 
-  std::ifstream in(fil[0], std::ios::in | std::ios::binary);
+  char buf[buffer_size];
+  std::ifstream in;
+  in.rdbuf()->pubsetbuf(buf, sizeof buf);
+
+  in.open(fil[0], std::ios::in | std::ios::binary);
 
   if (in) {
 

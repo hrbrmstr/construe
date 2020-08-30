@@ -116,35 +116,32 @@ private:
                 }
                 break;
             case ResponseHttpVersion_major:
-                if( input == '.' )
-                {
+                if( input == ' ' ) {
+                    resp.versionMinor = 0;
+                    state = ResponseHttpVersion_statusCodeStart;
+                } else if( input == '.' ) {
                     state = ResponseHttpVersion_minorStart;
-                }
-                else if( isDigit(input) )
-                {
+                } else if( isDigit(input) ) {
                     resp.versionMajor = resp.versionMajor * 10 + input - '0';
-                }
-                else
-                {
+                } else {
                     return ParsingError;
                 }
                 break;
             case ResponseHttpVersion_minorStart:
-                if( isDigit(input) )
-                {
+                if( input == ' ' ) {
+                    resp.versionMinor = 0;
+                    state = ResponseHttpVersion_statusCodeStart;
+                } else  if( isDigit(input) ) {
                     resp.versionMinor = input - '0';
                     state = ResponseHttpVersion_minor;
-                }
-                else
-                {
+                } else{
                     return ParsingError;
                 }
                 break;
             case ResponseHttpVersion_minor:
-                if( input == ' ')
-                {
+                if( input == ' ') {
                     state = ResponseHttpVersion_statusCodeStart;
-                    resp.statusCode = 0;
+                    resp.versionMinor = 0;
                 }
                 else if( isDigit(input) )
                 {
@@ -156,8 +153,11 @@ private:
                 }
                 break;
             case ResponseHttpVersion_statusCodeStart:
+                // printf("ResponseHttpVersion_statusCodeStart\n\n");
                 if( isDigit(input) )
                 {
+                    // printf("   - digit - ResponseHttpVersion_statusCodeStart\n\n");
+
                     resp.statusCode = input - '0';
                     state = ResponseHttpVersion_statusCode;
                 }
@@ -167,34 +167,40 @@ private:
                 }
                 break;
             case ResponseHttpVersion_statusCode:
+                // printf("ResponseHttpVersion_statusCode\n\n");
                 if( isDigit(input) )
                 {
+                    // printf("   - digit - ResponseHttpVersion_statusCode\n\n");
+
                     resp.statusCode = resp.statusCode * 10 + input - '0';
                 }
                 else
                 {
-                    if( resp.statusCode < 100 || resp.statusCode > 999 )
-                    {
+                    if( resp.statusCode < 100 || resp.statusCode > 999 ) {
                         return ParsingError;
-                    }
-                    else if( input == ' ' )
-                    {
+                    } else if( input == ' ' ) {
+                        // printf("   - SPACE - ResponseHttpVersion_statusCode\n\n");
                         state = ResponseHttpVersion_statusTextStart;
-                    }
-                    else
-                    {
+                    } else if( input == '\r' ) {
+                        // printf("   - CR - ResponseHttpVersion_statusCode\n\n");
+                        resp.status = "";
+                        state = ResponseHttpVersion_newLine;
+                    } else {
                         return ParsingError;
                     }
                 }
                 break;
             case ResponseHttpVersion_statusTextStart:
-                if( isChar(input) )
-                {
+                // printf("ResponseHttpVersion_statusTextStart\n\n");
+                if( input == '\r' ) {
+                    // printf("   - CR - ResponseHttpVersion_statusTextStart\n\n");
+                    resp.status = "";
+                    state = ResponseHttpVersion_newLine;
+                } else if( isChar(input) ) {
+                    // printf("   - char - ResponseHttpVersion_statusTextStart\n\n");
                     resp.status += input;
                     state = ResponseHttpVersion_statusText;
-                }
-                else
-                {
+                } else {
                     return ParsingError;
                 }
                 break;
@@ -213,8 +219,10 @@ private:
                 }
                 break;
             case ResponseHttpVersion_newLine:
+                // printf("ResponseHttpVersion_newLine\n\n");
                 if( input == '\n' )
                 {
+                    // printf("   - NL - ResponseHttpVersion_newLine\n\n");
                     state = HeaderLineStart;
                 }
                 else
@@ -223,6 +231,7 @@ private:
                 }
                 break;
             case HeaderLineStart:
+                // printf("HeaderLineStart\n\n");
                 if( input == '\r' )
                 {
                     state = ExpectingNewline_3;

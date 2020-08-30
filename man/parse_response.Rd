@@ -13,5 +13,19 @@ parse_response_raw(resp)
 \item{resp}{HTTP response character string}
 }
 \description{
-You can use the non- \verb{_raw} version on input you know for sure has is plain text
+You can use the non- \verb{_raw} version on input you know for sure is plain text
+}
+\examples{
+paste0(c(
+  "HTTP/1.1 200 OK\r\n",
+  "Server: nginx/1.2.1\r\n",
+  "Content-Type: text/html\r\n",
+  "Content-Length: 8\r\n",
+  "Connection: keep-alive\r\n",
+  "\r\n",
+  "<html />"
+), collapse = "") -> resp
+
+res <- parse_response(resp)
+res <- parse_response_raw(charToRaw(resp))
 }

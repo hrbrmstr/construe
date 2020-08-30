@@ -87,6 +87,30 @@ microbenchmark::microbenchmark(
 )
 ```
 
+### curl output example
+
+`HEAD` request:
+
+```{r curl-01}
+sys::exec_internal(
+  cmd = "curl", 
+  args = c("--include", "--head", "--silent", "https://httpbin.org/")
+) -> res
+
+rawToChar(res$stdout)
+```
+
+`GET` request:
+
+```{r curl-02}
+sys::exec_internal(
+  cmd = "curl", 
+  args = c("--include", "--silent", "https://httpbin.org/")
+) -> res
+
+parse_response_raw(res$stdout)
+```
+
 ### URLs
 
 ```{r ex03}
