@@ -1,3 +1,4 @@
+#include <locale>
 #include "request.h"
 #include "httprequestparser.h"
 
@@ -9,6 +10,7 @@
 #include <fstream>
 #include <string>
 #include <sys/stat.h>
+#include <stdlib.h>
 #include <Rcpp.h>
 
 using namespace Rcpp;
@@ -323,14 +325,14 @@ DataFrame parse_url(std::vector < std::string > urls) {
   }
 
   return(DataFrame::create(
-    _["scheme"] = scheme,
-    _["username"] = username,
-    _["password"] = password,
-    _["hostname"] = hostname,
-    _["port"] = port,
-    _["path"] = path,
-    _["query"] = query,
-    _["fragment"] = fragment
+      _["scheme"] = scheme,
+      _["username"] = username,
+      _["password"] = password,
+      _["hostname"] = hostname,
+      _["port"] = port,
+      _["path"] = path,
+      _["query"] = query,
+      _["fragment"] = fragment
   ));
 
 }
@@ -358,8 +360,11 @@ RawVector read_file_raw(CharacterVector fil, int buffer_size = 16384) {
   if (in) {
 
 #ifdef _WIN32
+    std::string f = std::string(fil[0]);
+    wchar_t wfil[f.length()*2];
+    std::mbstowcs(&wfil[0], f.c_str(), f.length()*2);
     struct _stati64 st;
-    _wstati64(file[0].begin(), &st)
+    _wstati64(&wfil[0], &st);
 #else
     struct stat st;
     stat(fil[0].begin(), &st);
@@ -378,4 +383,3 @@ RawVector read_file_raw(CharacterVector fil, int buffer_size = 16384) {
   }
 
 }
-
