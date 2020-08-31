@@ -11,10 +11,6 @@
 #include <sys/stat.h>
 #include <Rcpp.h>
 
-// #ifdef _WIN32
-// #include <windows.h>
-// #endif
-
 using namespace Rcpp;
 using namespace httpparser;
 
@@ -353,23 +349,6 @@ DataFrame parse_url(std::vector < std::string > urls) {
 // [[Rcpp::export]]
 RawVector read_file_raw(CharacterVector fil, int buffer_size = 16384) {
 
-// #ifdef _WIN32
-//   wchar_t* buf;
-//
-//   size_t len = MultiByteToWideChar(CP_UTF8, 0, fil[0].begin(), -1, NULL, 0);
-//
-//   if (len <= 0) Rf_error("Filenamt Unicode conversion error.")
-//
-//   buf = (wchar_t*)R_alloc(len, sizeof(wchar_t));
-//
-//   MultiByteToWideChar(CP_UTF8, 0, fil[0].begin(), -1, buf, len);
-//
-//   std::wstring wfil(buf, buf+len);
-//   std::wifstream in(wfil, std::ios::in | std::ios::binary);
-// #else
-//   std::ifstream in(fil[0], std::ios::in | std::ios::binary);
-// #endif
-
   char buf[buffer_size];
   std::ifstream in;
   in.rdbuf()->pubsetbuf(buf, sizeof buf);
@@ -380,10 +359,7 @@ RawVector read_file_raw(CharacterVector fil, int buffer_size = 16384) {
 
 #ifdef _WIN32
     struct _stati64 st;
-    size_t len = MultiByteToWideChar(CP_UTF8, 0, fil[0].begin(), -1, NULL, 0);
-    wchar_t buf[len];
-    MultiByteToWideChar(CP_UTF8, 0, fil[0].begin(), -1, &buf[0], len);
-    _wstati64(&buf[0], &st)
+    _wstati64(file[0].begin(), &st)
 #else
     struct stat st;
     stat(fil[0].begin(), &st);
