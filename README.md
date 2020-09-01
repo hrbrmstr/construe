@@ -138,9 +138,9 @@ microbenchmark::microbenchmark(
   parse_request_raw = parse_request_raw(req_raw)
 )
 ## Unit: microseconds
-##               expr     min       lq     mean   median       uq     max neval
-##      parse_request 280.122 298.3705 331.3345 310.9885 330.9345 681.193   100
-##  parse_request_raw 278.973 296.7420 326.5637 311.9000 327.2100 596.188   100
+##               expr     min      lq     mean   median       uq      max neval
+##      parse_request 143.630 147.311 189.2766 155.0385 191.2150 1014.576   100
+##  parse_request_raw 144.949 149.028 195.7029 159.6640 204.2565  829.436   100
 ```
 
 ### Responses
@@ -221,9 +221,9 @@ microbenchmark::microbenchmark(
   parse_response_raw = parse_response_raw(resp_raw)
 )
 ## Unit: microseconds
-##                expr     min      lq     mean   median      uq     max neval
-##      parse_response 275.622 290.722 307.2666 302.0490 316.040 477.767   100
-##  parse_response_raw 276.222 288.578 309.7851 300.0225 313.248 506.450   100
+##                expr     min       lq     mean   median       uq     max neval
+##      parse_response 142.521 146.0330 159.1186 147.1825 152.0095 275.389   100
+##  parse_response_raw 143.475 145.6985 160.2940 147.5150 154.3220 432.524   100
 ```
 
 ### curl output example
@@ -238,16 +238,78 @@ sys::exec_internal(
 
 str(parse_response(rawToChar(res$stdout)), 2)
 ## List of 7
-##  $ status_msg : chr "OK"
+##  $ status_msg : chr ""
 ##  $ status_code: num 200
-##  $ vers_maj   : int 1
+##  $ vers_maj   : int 2
 ##  $ vers_min   : int 0
 ##  $ keepalive  : logi TRUE
-##  $ headers    :'data.frame': 7 obs. of  2 variables:
-##   ..$ name : chr [1:7] "date" "content-type" "content-length" "connection" ...
-##   ..$ value: chr [1:7] "Sun, 30 Aug 2020 14:47:54 GMT" "text/html; charset=utf-8" "9593" "keep-alive" ...
+##  $ headers    :'data.frame': 6 obs. of  2 variables:
+##   ..$ name : chr [1:6] "date" "content-type" "content-length" "server" ...
+##   ..$ value: chr [1:6] "Tue, 01 Sep 2020 03:01:20 GMT" "text/html; charset=utf-8" "9593" "gunicorn/19.9.0" ...
 ##  $ content    : raw(0) 
 ##  - attr(*, "class")= chr [1:2] "http_response" "list"
+
+curl::curl_fetch_memory(
+ "https://httpbin.org/",
+ handle = curl::new_handle(
+  nobody = TRUE
+ )
+) -> res
+
+str(construe::parse_response_raw(res$headers), 2)
+## List of 7
+##  $ status_msg : chr ""
+##  $ status_code: num 200
+##  $ vers_maj   : int 2
+##  $ vers_min   : int 0
+##  $ keepalive  : logi TRUE
+##  $ headers    :'data.frame': 6 obs. of  2 variables:
+##   ..$ name : chr [1:6] "date" "content-type" "content-length" "server" ...
+##   ..$ value: chr [1:6] "Tue, 01 Sep 2020 03:01:20 GMT" "text/html; charset=utf-8" "9593" "gunicorn/19.9.0" ...
+##  $ content    : raw(0) 
+##  - attr(*, "class")= chr [1:2] "http_response" "list"
+
+curl::curl_fetch_memory(
+ "http://rud.is/b",
+ handle = curl::new_handle(
+  nobody = TRUE,
+  followlocation = TRUE
+ )
+) -> res
+
+rawToChar(res$headers) %>% 
+ strsplit("(?m)\r\n\r\n", perl = TRUE) %>% 
+ unlist() %>% 
+ lapply(construe::parse_response) %>% 
+ str(2)
+## List of 3
+##  $ :List of 7
+##   ..$ status_msg : chr "Moved Permanently"
+##   ..$ status_code: num 301
+##   ..$ vers_maj   : int 1
+##   ..$ vers_min   : int 0
+##   ..$ keepalive  : logi FALSE
+##   ..$ headers    :'data.frame':  6 obs. of  2 variables:
+##   ..$ content    : raw(0) 
+##   ..- attr(*, "class")= chr [1:2] "http_response" "list"
+##  $ :List of 7
+##   ..$ status_msg : chr ""
+##   ..$ status_code: num 301
+##   ..$ vers_maj   : int 2
+##   ..$ vers_min   : int 0
+##   ..$ keepalive  : logi FALSE
+##   ..$ headers    :'data.frame':  14 obs. of  2 variables:
+##   ..$ content    : raw(0) 
+##   ..- attr(*, "class")= chr [1:2] "http_response" "list"
+##  $ :List of 7
+##   ..$ status_msg : chr ""
+##   ..$ status_code: num 200
+##   ..$ vers_maj   : int 2
+##   ..$ vers_min   : int 0
+##   ..$ keepalive  : logi FALSE
+##   ..$ headers    :'data.frame':  19 obs. of  2 variables:
+##   ..$ content    : raw(0) 
+##   ..- attr(*, "class")= chr [1:2] "http_response" "list"
 ```
 
 `GET` request:
@@ -260,15 +322,30 @@ sys::exec_internal(
 
 str(parse_response_raw(res$stdout), 2)
 ## List of 7
-##  $ status_msg : chr "OK"
+##  $ status_msg : chr ""
 ##  $ status_code: num 200
-##  $ vers_maj   : int 1
+##  $ vers_maj   : int 2
 ##  $ vers_min   : int 0
 ##  $ keepalive  : logi TRUE
-##  $ headers    :'data.frame': 7 obs. of  2 variables:
-##   ..$ name : chr [1:7] "date" "content-type" "content-length" "connection" ...
-##   ..$ value: chr [1:7] "Sun, 30 Aug 2020 14:47:54 GMT" "text/html; charset=utf-8" "9593" "keep-alive" ...
+##  $ headers    :'data.frame': 6 obs. of  2 variables:
+##   ..$ name : chr [1:6] "date" "content-type" "content-length" "server" ...
+##   ..$ value: chr [1:6] "Tue, 01 Sep 2020 03:01:22 GMT" "text/html; charset=utf-8" "9593" "gunicorn/19.9.0" ...
 ##  $ content    : raw [1:9593] 3c 21 44 4f ...
+##  - attr(*, "class")= chr [1:2] "http_response" "list"
+
+res <- curl::curl_fetch_memory("https://httpbin.org/")
+
+str(construe::parse_response_raw(res$headers), 2)
+## List of 7
+##  $ status_msg : chr ""
+##  $ status_code: num 200
+##  $ vers_maj   : int 2
+##  $ vers_min   : int 0
+##  $ keepalive  : logi TRUE
+##  $ headers    :'data.frame': 6 obs. of  2 variables:
+##   ..$ name : chr [1:6] "date" "content-type" "content-length" "server" ...
+##   ..$ value: chr [1:6] "Tue, 01 Sep 2020 03:01:22 GMT" "text/html; charset=utf-8" "9593" "gunicorn/19.9.0" ...
+##  $ content    : raw(0) 
 ##  - attr(*, "class")= chr [1:2] "http_response" "list"
 ```
 
@@ -309,8 +386,8 @@ microbenchmark::microbenchmark(
   parse_url = parse_url(turls[1])
 )
 ## Unit: microseconds
-##       expr     min      lq     mean  median       uq      max neval
-##  parse_url 692.524 739.097 797.8908 771.758 824.2855 1049.674   100
+##       expr    min       lq    mean   median       uq     max neval
+##  parse_url 352.05 359.3035 397.343 374.0825 388.4345 755.995   100
 ```
 
 ### Parse headers from Palo Alto `HEAD` requests
@@ -407,12 +484,12 @@ parse_response_raw(hdr)
 
 | Lang         | \# Files |  (%) |  LoC |  (%) | Blank lines |  (%) | \# Lines |  (%) |
 | :----------- | -------: | ---: | ---: | ---: | ----------: | ---: | -------: | ---: |
-| C/C++ Header |        5 | 0.21 | 1556 | 0.40 |         122 | 0.23 |       66 | 0.11 |
-| C++          |        2 | 0.08 |  300 | 0.08 |          95 | 0.18 |      101 | 0.17 |
-| Rmd          |        1 | 0.04 |   68 | 0.02 |          43 | 0.08 |       47 | 0.08 |
-| R            |        3 | 0.12 |   22 | 0.01 |           9 | 0.02 |       80 | 0.14 |
+| C/C++ Header |        5 | 0.19 | 1556 | 0.39 |         122 | 0.22 |       66 | 0.12 |
+| C++          |        2 | 0.08 |  305 | 0.08 |          92 | 0.17 |       81 | 0.14 |
+| Rmd          |        1 | 0.04 |   89 | 0.02 |          49 | 0.09 |       47 | 0.08 |
+| R            |        4 | 0.15 |   23 | 0.01 |           9 | 0.02 |       90 | 0.16 |
 | YAML         |        1 | 0.04 |   22 | 0.01 |           2 | 0.00 |        2 | 0.00 |
-| SUM          |       12 | 0.50 | 1968 | 0.50 |         271 | 0.50 |      296 | 0.50 |
+| SUM          |       13 | 0.50 | 1995 | 0.50 |         274 | 0.50 |      286 | 0.50 |
 
 clock Package Metrics for construe
 
